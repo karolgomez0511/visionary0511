@@ -4,7 +4,7 @@
         <div class="col-lg-12">
             <div class="form-group">
                 
-                <a href="#" class="btn btn-primary btn_new_cliente"><i class="fas fa-user-plus"></i> Nuevo Cliente</a>
+               
             </div>
             <div class="card primary">
                 <div class=" ">

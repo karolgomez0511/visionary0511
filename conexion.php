@@ -1,9 +1,9 @@
 <?php
 
-$host = "localhost";
-$user = "root";
-$clave = "";
-$bd = "sistema2";
+$host = "jhdjjtqo9w5bzq2t.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+$user = "yx9immfi1nzcn8q0";
+$clave = "rey613mgs0h00n4c";
+$bd = "q72qot2fgd2a2c26";
 
     $conexion = mysqli_connect($host,$user,$clave,$bd);
     if (mysqli_connect_errno()){

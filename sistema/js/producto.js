@@ -260,16 +260,26 @@ $('#txt_cod_pro').keyup(function(e) {
 });
 
 // calcular el Total
-$('#txt_cant_producto').keyup(function(e) {
+$('#txt_cant_producto').keyup(function (e) {
   e.preventDefault();
-  var precio_total = $(this).val() * $('#txt_precio').html();
+
+  var cantidad = parseFloat($(this).val());
+  var precio_unitario = parseFloat($('#txt_precio').html());
   var existencia = parseInt($('#txt_existencia').html());
-  $('#txt_precio_total').html(precio_total);
-  // Ocultat el boton Agregar si la cantidad es menor que 1
-  if (($(this).val() < 1 || isNaN($(this).val())) || ($(this).val() > existencia)){
-    $('#add_product_venta').slideUp();
-  }else {
-    $('#add_product_venta').slideDown();
+
+  // Obtener el valor del adelanto
+  var adelanto = parseFloat($('#txt_cuenta').val()) || 0;
+
+  // Calcular el precio total considerando la cantidad, el precio unitario y el adelanto
+  var precio_total = (cantidad * precio_unitario) - adelanto;
+
+  $('#txt_precio_total').html(precio_total.toFixed(2));
+
+  // Ocultar el botón Agregar si la cantidad es menor que 1 o mayor que la existencia
+  if ((cantidad < 1 || isNaN(cantidad)) || (cantidad > existencia)) {
+      $('#add_product_venta').slideUp();
+  } else {
+      $('#add_product_venta').slideDown();
   }
 });
 
@@ -277,44 +287,46 @@ $('#txt_cant_producto').keyup(function(e) {
 $('#add_product_venta').click(function(e) {
   e.preventDefault();
   if ($('#txt_cant_producto').val() > 0) {
-    var codproducto = $('#txt_cod_producto').val();
-    var cantidad = $('#txt_cant_producto').val();
-    var action = 'addProductoDetalle';
-    $.ajax({
-      url: 'modal.php',
-      type: 'POST',
-      async: true,
-      data: {action:action,producto:codproducto,cantidad:cantidad},
-      success: function(response) {
-        
-        if (response != 'error') {
-          var info = JSON.parse(response);
-          $('#detalle_venta').html(info.detalle);
-          $('#detalle_totales').html(info.totales);
-          $('#txt_cod_producto').val('');
-          $('#txt_cod_pro').val('');
-          $('#txt_descripcion').html('-');
-          $('#txt_existencia').html('-');
-          $('#txt_cant_producto').val('0');
-          $('#txt_precio').html('0.00');
-          $('#txt_precio_total').html('0.00');
+      var codproducto = $('#txt_cod_producto').val();
+      var cantidad = $('#txt_cant_producto').val();
+      var adelanto = $('#txt_cuenta').val() || 0; // Obtener el adelanto
+      var action = 'addProductoDetalle';
+      $.ajax({
+          url: 'modal.php',
+          type: 'POST',
+          async: true,
+          data: { action: action, producto: codproducto, cantidad: cantidad, adelanto: adelanto },
+          success: function(response) {
+              if (response !== 'error') {
+                  var info = JSON.parse(response);
+                  $('#detalle_venta').html(info.detalle);
+                  $('#detalle_totales').html(info.totales);
+                  $('#txt_cod_producto').val('');
+                  $('#txt_cod_pro').val('');
+                  $('#txt_descripcion').html('-');
+                  $('#txt_existencia').html('-');
+                  $('#txt_cant_producto').val('0');
+                  $('#txt_precio').html('0.00');
+                  $('#txt_precio_total').html('0.00');
 
-          // Bloquear cantidad
-          $('#txt_cant_producto').attr('disabled','disabled');
+                  // Bloquear cantidad
+                  $('#txt_cant_producto').attr('disabled', 'disabled');
 
-          // Ocultar boton agregar
-          $('#add_product_venta').slideUp();
-        }else {
-          console.log('No hay dato');
-        }
-        viewProcesar();
-      },
-      error: function(error) {
-
-      }
-    });
+                  // Ocultar botón agregar
+                  $('#add_product_venta').slideUp();
+              } else {
+                  console.log('No hay dato');
+              }
+              viewProcesar();
+          },
+          error: function(error) {
+              console.log(error);
+          }
+      });
   }
 });
+
+
 
 // anular venta
 $('#btn_anular_venta').click(function(e) {
@@ -569,6 +581,24 @@ function sendDataProduct() {
   });
 
 }
+
+// función para actualizar el precio total
+function updatePriceTotal(producto_id) {
+  var cantidad = parseFloat($('.row' + producto_id + ' .txt_cant_producto').val());
+  var precio_unitario = parseFloat($('.row' + producto_id + ' .celPrecio').html());
+  var a_cuenta = parseFloat($('.row' + producto_id + ' .txt_a_cuenta_detalle').val());
+
+  // Calcular el precio total considerando la cantidad y la cuenta
+  var precio_total = cantidad * precio_unitario - a_cuenta;
+
+  // Actualizar el campo correspondiente en la fila
+  $('.row' + producto_id + ' .txt_precio_total_detalle').html(precio_total.toFixed(2));
+}
+
+
+
+
+
 // funcion para elimar producto
 function delProduct() {
   var pr = $('#producto_id').val();

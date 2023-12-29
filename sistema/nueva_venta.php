@@ -41,6 +41,7 @@
                             <th>Stock</th>
                             <th width="100px">Cantidad</th>
                             <th class="textright">Precio</th>
+                            <th width="100px">A Cuenta</th>
                             <th class="textright">Precio Total</th>
                             <th>Acciones</th>
                         </tr>
@@ -52,6 +53,7 @@
                             <td id="txt_existencia">-</td>
                             <td><input type="text" name="txt_cant_producto" id="txt_cant_producto" value="0" min="1" disabled></td>
                             <td id="txt_precio" class="textright">0.00</td>
+                            <td><input type="text" name="txt_cuenta" id="txt_cuenta" ></td>
                             <td id="txt_precio_total" class="txtright">0.00</td>
                             <td><a href="#" id="add_product_venta" class="btn btn-dark" style="display: none;">Agregar</a></td>
                         </tr>
